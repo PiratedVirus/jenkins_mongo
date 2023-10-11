@@ -32,10 +32,12 @@ mongoose.connection.once('open', async () => {
                 transformedData[key] = {};
             }
 
-            const env = doc.deployEnv === 'prod' ? 'prod' : 'dev';
+            const env = doc.deployEnv === 'prod' ? 'prod' : doc.deployEnv === 'Node-final-env' ? 'release' : 'dev';
+            const regex = /\.com\/([^\/]+)/;
+            const gitAuthor = doc.gitURL.match(regex)
             transformedData[key][env] = {
                 timestamp: doc.timestamp,
-                author: doc.author,
+                author: gitAuthor[1],
                 deployEnv: doc.deployEnv,
                 buildName: doc.buildName,
                 buildURL: doc.buildURL,
